@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 
-const Schedule = ({ startDate }) => {
+const Schedule = ({ startDate, onEventsChange }) => {
   const [config, setConfig] = useState({
     viewType: "Resources",
   });
@@ -10,16 +10,7 @@ const Schedule = ({ startDate }) => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    setColumns([
-      { name: "Room 1", id: "R1" },
-      { name: "Room 2", id: "R2" },
-      { name: "Room 3", id: "R3" },
-      { name: "Room 4", id: "R4" },
-      { name: "Room 5", id: "R5" },
-      { name: "Room 6", id: "R6" },
-    ]);
-
-    setEvents([
+    const newEvents = [
       {
         id: 1,
         text: "Event 1",
@@ -52,8 +43,24 @@ const Schedule = ({ startDate }) => {
         barColor: "#f37021",
         resource: "R4"
       }
+    ];
+    
+    setColumns([
+      { name: "Room 1", id: "R1" },
+      { name: "Room 2", id: "R2" },
+      { name: "Room 3", id: "R3" },
+      { name: "Room 4", id: "R4" },
+      { name: "Room 5", id: "R5" },
+      { name: "Room 6", id: "R6" },
     ]);
-  }, []);
+
+    setEvents(newEvents);
+
+    // Notify the parent component about the events
+    if (onEventsChange) {
+      onEventsChange(newEvents);
+    }
+  }, [onEventsChange]);
 
   return (
     <DayPilotCalendar
