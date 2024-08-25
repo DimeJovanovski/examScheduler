@@ -3,7 +3,7 @@ import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 
 const Schedule = ({ startDate, onEventsChange }) => {
   const [config, setConfig] = useState({
-    viewType: "Resources",
+    viewType: "Resources"
   });
 
   const [columns, setColumns] = useState([]);
@@ -38,8 +38,8 @@ const Schedule = ({ startDate, onEventsChange }) => {
       {
         id: 4,
         text: "Event 4",
-        start: "2024-08-27T11:00:00",
-        end: "2024-08-27T14:30:00",
+        start: "2024-08-27T08:00:00",
+        end: "2024-08-27T08:30:00",
         barColor: "#f37021",
         resource: "R4"
       }
@@ -65,6 +65,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
   return (
     <DayPilotCalendar
       {...config}
+      timeFormat='Clock24Hours'
       startDate={startDate}
       columns={columns}
       events={events}
