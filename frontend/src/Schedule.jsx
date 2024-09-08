@@ -28,6 +28,14 @@ const Schedule = ({ startDate, onEventsChange }) => {
         resource: "R2"
       },
       {
+        id: 2,
+        text: "Event 2",
+        start: "2024-08-25T11:00:00",
+        end: "2024-08-25T14:30:00",
+        barColor: "#f37021",
+        resource: "R3"
+      },
+      {
         id: 3,
         text: "Event 3",
         start: "2024-08-26T11:00:00",
