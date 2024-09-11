@@ -11,7 +11,6 @@ import mk.ukim.finki.examscheduler.web.model.enumerations.RoomType;
 @AllArgsConstructor
 @Entity
 public class Room {
-
     @Id
     private String name;
 
