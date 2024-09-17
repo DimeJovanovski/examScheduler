@@ -12,6 +12,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class SubjectExamDTO {
     private String id;
+    private String subjectAbbreviation;
+    private String subjectName;
     private StudyCycle studyCycle; // This will hold the list of cycles
     private Long durationMinutes;
     private LocalDateTime fromTime;
