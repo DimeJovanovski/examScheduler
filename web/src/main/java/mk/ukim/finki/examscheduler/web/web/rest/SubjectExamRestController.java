@@ -2,10 +2,8 @@ package mk.ukim.finki.examscheduler.web.web.rest;
 
 import mk.ukim.finki.examscheduler.web.model.dto.SubjectExamDTO;
 import mk.ukim.finki.examscheduler.web.service.SubjectExamService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +21,14 @@ public class SubjectExamRestController {
     public List<SubjectExamDTO> getForCalendarDisplay() {
         return this.subjectExamService.getForCalendarDisplay();
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteById(@PathVariable String id) {
+        this.subjectExamService.deleteById(id);
+        if (this.subjectExamService.findById(id).isEmpty()) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }

@@ -9,6 +9,7 @@ import mk.ukim.finki.examscheduler.web.service.SubjectExamService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,11 @@ public class SubjectExamServiceImpl implements SubjectExamService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<SubjectExam> findById(String id) {
+        return this.subjectExamRepository.findById(id);
+    }
+
     private SubjectExamDTO convertToDTO(SubjectExam subjectExam) {
         // extract study cycle
         StudyCycle studyCycle = subjectExam.getDefinition().getSubject().getCycle();
@@ -37,13 +43,20 @@ public class SubjectExamServiceImpl implements SubjectExamService {
                 .collect(Collectors.toSet());
 
         return new SubjectExamDTO(
+                subjectExam.getId(),
                 subjectExam.getDefinition().getSubject().getAbbreviation(),
+                subjectExam.getDefinition().getSubject().getName(),
                 studyCycle,
                 subjectExam.getDurationMinutes(),
                 subjectExam.getFromTime(),
                 subjectExam.getToTime(),
                 roomNames
         );
+    }
+
+    @Override
+    public void deleteById(String id) {
+        this.subjectExamRepository.deleteById(id);
     }
 }
 
