@@ -10,9 +10,6 @@ import java.util.Set;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, String> {
-    /*
-    Projection of room table (only the name/id column)
-     */
     List<RoomNameProjection> findAllBy();
     Set<Room> findByNameIn(Set<String> names);
 }
