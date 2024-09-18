@@ -1,5 +1,6 @@
 package mk.ukim.finki.examscheduler.web.web.rest;
 
+import mk.ukim.finki.examscheduler.web.model.SubjectExam;
 import mk.ukim.finki.examscheduler.web.model.dto.SubjectExamDTO;
 import mk.ukim.finki.examscheduler.web.service.SubjectExamService;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,13 @@ public class SubjectExamRestController {
     @GetMapping
     public List<SubjectExamDTO> getForCalendarDisplay() {
         return this.subjectExamService.getForCalendarDisplay();
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<SubjectExam> edit(@PathVariable String id, @RequestBody SubjectExamDTO subjectExamDTO) {
+        return this.subjectExamService.edit(id, subjectExamDTO)
+                .map(subjectExam -> ResponseEntity.ok().body(subjectExam))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/delete/{id}")

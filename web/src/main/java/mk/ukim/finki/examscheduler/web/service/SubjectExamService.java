@@ -13,5 +13,6 @@ public interface SubjectExamService {
      */
     List<SubjectExamDTO> getForCalendarDisplay();
     Optional<SubjectExam> findById(String id);
+    Optional<SubjectExam> edit(String id, SubjectExamDTO subjectExamDTO);
     void deleteById(String id);
 }
