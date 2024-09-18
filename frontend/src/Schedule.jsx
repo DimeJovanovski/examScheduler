@@ -1,33 +1,146 @@
 import React, { useState, useEffect } from 'react';
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
-import { fetchRoomNames, fetchExams, deleteExam } from './api/api';
+import { fetchRoomNames, fetchExams, deleteExam, editExam } from './api/api'; // Import API functions
 import { getColorByStudyCycle } from './utils/studyCycleColors';
+import { Modal } from "@daypilot/modal";
 
 const Schedule = ({ startDate, onEventsChange }) => {
-  const [columns, setColumns] = useState([]); // For room names
-  const [events, setEvents] = useState([]);   // For exams
+  const [columns, setColumns] = useState([]); // Room names
+  const [events, setEvents] = useState([]);   // Exams
 
+  // Function to format the date-time for input fields
+  const formatTime = (dateTime) => {
+    const date = new Date(dateTime);
+    const year = date.getFullYear();
+    const month = (`0${date.getMonth() + 1}`).slice(-2);
+    const day = (`0${date.getDate()}`).slice(-2);
+    const hours = (`0${date.getHours()}`).slice(-2);
+    const minutes = (`0${date.getMinutes()}`).slice(-2);
+    const seconds = (`0${date.getSeconds()}`).slice(-2);
+  
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
+
+  // Function to open and handle the edit form
+  const openEditForm = async (event) => {
+    // Create the form configuration with checkboxes for each room
+    const form = [
+      { type: 'title', name: `${event.text} (${event.subjectAbbreviation})` },
+      { 
+        type: 'datetime', 
+        id: 'fromTime', 
+        name: 'Од', 
+        dateFormat: 'yyyy-MM-dd', 
+        timeFormat: 'HH:mm', 
+        value: formatTime(event.start)
+      },
+      { 
+        type: 'datetime', 
+        id: 'toTime', 
+        name: 'До', 
+        dateFormat: 'yyyy-MM-dd', 
+        timeFormat: 'HH:mm', 
+        value: formatTime(event.end)
+      },
+      ...columns.map((room) => ({
+        type: 'checkbox',
+        id: room.id,
+        name: room.name
+      }))
+    ];
+  
+    // Create a data object to pre-check the checkboxes
+    const data = columns.reduce((acc, room) => {
+      acc[room.id] = event.rooms.split(', ').includes(room.name.trim());
+      return acc;
+    }, {
+      fromTime: event.start,
+      toTime: event.end,
+      subjectName: event.text,
+      subjectId: event.id
+    });
+  
+    // Open the modal with the form and pre-filled data
+    const modal = await DayPilot.Modal.form(form, data);
+    if (!modal.canceled) {
+      const updatedData = modal.result;
+  
+      // Prepare the data for the PUT request
+      const requestBody = {
+        id: event.id,
+        subjectAbbreviation: event.subjectAbbreviation,
+        subjectName: event.text,
+        studyCycle: event.studyCycle,
+        durationMinutes: (new Date(updatedData.toTime) - new Date(updatedData.fromTime)) / (1000 * 60),
+        fromTime: updatedData.fromTime,
+        toTime: updatedData.toTime,
+        roomNames: columns.filter(room => updatedData[room.id]).map(room => room.name)
+      };
+  
+      // Send the PUT request to the backend
+      try {
+        await editExam(event.id, requestBody);
+        
+        // Update the local events state with the modified exam data
+        setEvents(prevEvents => {
+          // Update the specific event in the list
+          const updatedEvents = prevEvents.map(ev =>
+            ev.id === event.id
+              ? {
+                  ...ev,
+                  ...requestBody,
+                  rooms: requestBody.roomNames.join(", "),
+                  start: updatedData.fromTime,
+                  end: updatedData.toTime
+                }
+              : ev
+          );
+          
+          // Notify the parent component about the updated events
+          if (onEventsChange) {
+            onEventsChange(updatedEvents);
+          }
+          
+          return updatedEvents;
+        });
+      } catch (error) {
+        console.error('Failed to update exam:', error);
+      }
+    }
+  };
+  
+
+  // Configuration for the DayPilot Calendar
   const config = {
     viewType: "Resources",
-    cellWidth: 300,  // Set a fixed width for the columns
-    eventHeight: 30, // Height of the events
+    cellWidth: 300,
+    eventHeight: 30,
     showEventTime: true,
     contextMenu: new DayPilot.Menu({
       items: [
         {
-          text: "Избриши", // "Delete"
+          text: "Уреди",
+          onClick: (args) => {
+            openEditForm(args.source.data);
+          }
+        },
+        {
+          text: "Избриши",
           onClick: async (args) => {
-            const eventId = args.source.data.id; // Ensure you are accessing the event ID correctly
+            const eventId = args.source.data.id;
             try {
               await deleteExam(eventId);
               console.log(`Exam with ID ${eventId} deleted successfully.`);
-              
+
               // Remove the event from the events array
-              setEvents((prevEvents) => {
+              setEvents(prevEvents => {
                 const updatedEvents = prevEvents.filter(event => event.id !== eventId);
+                
+                // Notify the parent component with updated events
                 if (onEventsChange) {
-                  onEventsChange(updatedEvents); // Notify the parent component with updated events
+                  onEventsChange(updatedEvents);
                 }
+                
                 return updatedEvents;
               });
             } catch (error) {
@@ -50,7 +163,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
       }
 
       DayPilot.Modal.alert(`
-        <b>Предмет:</b> ${event.text} (${event.id})<br>
+        <b>Предмет:</b> ${event.text} (${event.subjectAbbreviation})<br>
         <b>Од:</b> ${formatDateTime(event.start)}<br>
         <b>До:</b> ${formatDateTime(event.end)}<br>
         <b>Простории:</b> ${event.rooms}
@@ -58,6 +171,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
     }
   };
 
+  // Fetch data on component mount
   useEffect(() => {
     Promise.all([fetchRoomNames(), fetchExams()])
       .then(([roomsResponse, examsResponse]) => {
@@ -72,15 +186,16 @@ const Schedule = ({ startDate, onEventsChange }) => {
         const examEvents = examsResponse.data.flatMap((exam) => {
           const rooms = `${exam.roomNames}`.replace(/,/g, ", ");
           return exam.roomNames.map((roomName) => ({
-            id: `${exam.id}`, // Unique ID for each exam-room combination
-            text: `${exam.subjectName}`, // The exam name or id
-            start: exam.fromTime, // Exam start time
-            end: exam.toTime, // Exam end time
+            id: `${exam.id}`,
+            text: `${exam.subjectName}`,
+            subjectAbbreviation: exam.subjectAbbreviation,
+            start: exam.fromTime,
+            end: exam.toTime,
             rooms: rooms,
-            barColor: getColorByStudyCycle(exam.studyCycle), // Color for the event bar
+            barColor: getColorByStudyCycle(exam.studyCycle),
             moveVDisabled: true,
             moveHDisabled: false,
-            resource: `R${roomColumns.findIndex(col => col.name === roomName) + 1}` // Match room name with resource ID
+            resource: `R${roomColumns.findIndex(col => col.name === roomName) + 1}`
           }));
         });
         setEvents(examEvents);

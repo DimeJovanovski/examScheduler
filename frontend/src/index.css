@@ -14,6 +14,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure all items are inline-block for horizontal alignment */
+.modal_default_form_item {
+  display: inline-block; /* Align items next to each other */
+  margin: 0; /* Remove default margin */
+}
+
+/* Style the checkbox items to be inline-block and add margin */
+.modal_default_form_item_checkbox {
+  display: inline-block; /* Ensure checkboxes are inline-block */
+  margin: 0; /* Remove default margin */
+  margin-right: 10px; /* Space between items */
+}
+
+.modal_default_form_item_datetime {
+  display: block;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

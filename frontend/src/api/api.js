@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const apiUri = "http://localhost:9091/api";
+
 // Fetch room names from the backend API
 export const fetchRoomNames = () => {
   return axios.get('http://localhost:9091/api/rooms/names');
@@ -21,6 +23,23 @@ export const deleteExam = (id) => {
     .catch(error => {
       console.error(`Failed to delete exam with ID ${id}: `, error);
       throw error;  // Rethrow the error so it can be handled by the caller
+    });
+};
+
+// Edit an exam in the backend API using the exam ID and the updated data
+export const editExam = (id, updatedData) => {
+  return axios.put(`http://localhost:9091/api/exams/edit/${id}`, updatedData, {
+    headers: {
+      'Content-Type': 'application/json'  // Ensure that the data is sent as JSON
+    }
+  })
+    .then(response => {
+      console.log(`Exam with ID ${id} updated successfully`);
+      return response.data;
+    })
+    .catch(error => {
+      console.error(`Failed to update exam with ID ${id}: `, error);
+      throw error;
     });
 };
 
