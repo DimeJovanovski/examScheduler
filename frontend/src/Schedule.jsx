@@ -23,7 +23,6 @@ const Schedule = ({ startDate, onEventsChange }) => {
 
   // Function to open and handle the edit form
   const openEditForm = async (event) => {
-    // Create the form configuration with checkboxes for each room
     const form = [
       { type: 'title', name: `${event.text} (${event.subjectAbbreviation})` },
       { 
@@ -48,8 +47,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
         name: room.name
       }))
     ];
-  
-    // Create a data object to pre-check the checkboxes
+
     const data = columns.reduce((acc, room) => {
       acc[room.id] = event.rooms.split(', ').includes(room.name.trim());
       return acc;
@@ -59,13 +57,11 @@ const Schedule = ({ startDate, onEventsChange }) => {
       subjectName: event.text,
       subjectId: event.id
     });
-  
-    // Open the modal with the form and pre-filled data
+
     const modal = await DayPilot.Modal.form(form, data);
     if (!modal.canceled) {
       const updatedData = modal.result;
-  
-      // Prepare the data for the PUT request
+
       const requestBody = {
         id: event.id,
         subjectAbbreviation: event.subjectAbbreviation,
@@ -76,39 +72,44 @@ const Schedule = ({ startDate, onEventsChange }) => {
         toTime: updatedData.toTime,
         roomNames: columns.filter(room => updatedData[room.id]).map(room => room.name)
       };
-  
-      // Send the PUT request to the backend
+
       try {
         await editExam(event.id, requestBody);
-        
-        // Update the local events state with the modified exam data
-        setEvents(prevEvents => {
-          // Update the specific event in the list
-          const updatedEvents = prevEvents.map(ev =>
-            ev.id === event.id
-              ? {
-                  ...ev,
-                  ...requestBody,
-                  rooms: requestBody.roomNames.join(", "),
-                  start: updatedData.fromTime,
-                  end: updatedData.toTime
-                }
-              : ev
-          );
-          
-          // Notify the parent component about the updated events
-          if (onEventsChange) {
-            onEventsChange(updatedEvents);
-          }
-          
-          return updatedEvents;
-        });
+        // Refresh events after editing
+        refreshEvents();
       } catch (error) {
         console.error('Failed to update exam:', error);
       }
     }
   };
-  
+
+  // Function to refresh the events list
+  const refreshEvents = async () => {
+    try {
+      const examsResponse = await fetchExams();
+      const examEvents = examsResponse.data.flatMap((exam) => {
+        const rooms = `${exam.roomNames}`.replace(/,/g, ", ");
+        return exam.roomNames.map((roomName) => ({
+          id: `${exam.id}`,
+          text: `${exam.subjectName}`,
+          subjectAbbreviation: exam.subjectAbbreviation,
+          start: exam.fromTime,
+          end: exam.toTime,
+          rooms: rooms,
+          barColor: getColorByStudyCycle(exam.studyCycle),
+          moveVDisabled: true,
+          moveHDisabled: false,
+          resource: `R${columns.findIndex(col => col.name === roomName) + 1}`
+        }));
+      });
+      setEvents(examEvents);
+      if (onEventsChange) {
+        onEventsChange(examEvents);
+      }
+    } catch (error) {
+      console.error("Error refreshing events:", error);
+    }
+  };
 
   // Configuration for the DayPilot Calendar
   const config = {
@@ -131,18 +132,8 @@ const Schedule = ({ startDate, onEventsChange }) => {
             try {
               await deleteExam(eventId);
               console.log(`Exam with ID ${eventId} deleted successfully.`);
-
-              // Remove the event from the events array
-              setEvents(prevEvents => {
-                const updatedEvents = prevEvents.filter(event => event.id !== eventId);
-                
-                // Notify the parent component with updated events
-                if (onEventsChange) {
-                  onEventsChange(updatedEvents);
-                }
-                
-                return updatedEvents;
-              });
+              // Refresh events after deletion
+              refreshEvents();
             } catch (error) {
               console.error(`Failed to delete exam with ID ${eventId}: `, error);
             }
@@ -175,14 +166,12 @@ const Schedule = ({ startDate, onEventsChange }) => {
   useEffect(() => {
     Promise.all([fetchRoomNames(), fetchExams()])
       .then(([roomsResponse, examsResponse]) => {
-        // Set room names to columns
         const roomColumns = roomsResponse.data.map((room, index) => ({
           name: room.name,
           id: `R${index + 1}` // Generate unique IDs for rooms
         }));
         setColumns(roomColumns);
 
-        // Set exams to events, handling multiple rooms
         const examEvents = examsResponse.data.flatMap((exam) => {
           const rooms = `${exam.roomNames}`.replace(/,/g, ", ");
           return exam.roomNames.map((roomName) => ({
@@ -200,7 +189,6 @@ const Schedule = ({ startDate, onEventsChange }) => {
         });
         setEvents(examEvents);
 
-        // Notify the parent component about the events
         if (onEventsChange) {
           onEventsChange(examEvents);
         }
