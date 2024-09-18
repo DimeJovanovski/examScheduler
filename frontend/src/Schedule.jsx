@@ -154,7 +154,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
       }
 
       DayPilot.Modal.alert(`
-        <b>Предмет:</b> ${event.text} (${event.subjectAbbreviation})<br>
+        <h2>${event.text} (${event.subjectAbbreviation})</h2>
         <b>Од:</b> ${formatDateTime(event.start)}<br>
         <b>До:</b> ${formatDateTime(event.end)}<br>
         <b>Простории:</b> ${event.rooms}
