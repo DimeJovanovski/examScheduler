@@ -1,14 +1,12 @@
 package mk.ukim.finki.examscheduler.web.service.impl;
 
-import mk.ukim.finki.examscheduler.web.model.Room;
-import mk.ukim.finki.examscheduler.web.model.SubjectExam;
+import mk.ukim.finki.examscheduler.web.model.*;
+import mk.ukim.finki.examscheduler.web.model.dto.AddExamDTO;
 import mk.ukim.finki.examscheduler.web.model.dto.AddExamDisplayDataDTO;
 import mk.ukim.finki.examscheduler.web.model.dto.SubjectExamDTO;
 import mk.ukim.finki.examscheduler.web.model.enumerations.StudyCycle;
 import mk.ukim.finki.examscheduler.web.model.projections.SubjectProjection;
-import mk.ukim.finki.examscheduler.web.repository.RoomRepository;
-import mk.ukim.finki.examscheduler.web.repository.SubjectExamRepository;
-import mk.ukim.finki.examscheduler.web.repository.YearExamSessionRepository;
+import mk.ukim.finki.examscheduler.web.repository.*;
 import mk.ukim.finki.examscheduler.web.service.SubjectExamService;
 import mk.ukim.finki.examscheduler.web.service.SubjectService;
 import org.springframework.stereotype.Service;
@@ -24,17 +22,23 @@ public class SubjectExamServiceImpl implements SubjectExamService {
     private final RoomRepository roomRepository;
     private final SubjectService subjectService;
     private final YearExamSessionRepository sessionRepository;
+    private final SubjectRepository subjectRepository;
+    private final JoinedSubjectRepository joinedSubjectRepository;
+    private final ExamDefinitionRepository examDefinitionRepository;
 
     public SubjectExamServiceImpl(
             SubjectExamRepository subjectExamRepository,
             RoomRepository roomRepository,
             SubjectService subjectService,
-            YearExamSessionRepository sessionRepository
+            YearExamSessionRepository sessionRepository, SubjectRepository subjectRepository, JoinedSubjectRepository joinedSubjectRepository, ExamDefinitionRepository examDefinitionRepository
     ) {
         this.subjectExamRepository = subjectExamRepository;
         this.roomRepository = roomRepository;
         this.subjectService = subjectService;
         this.sessionRepository = sessionRepository;
+        this.subjectRepository = subjectRepository;
+        this.joinedSubjectRepository = joinedSubjectRepository;
+        this.examDefinitionRepository = examDefinitionRepository;
     }
 
     @Override
@@ -57,6 +61,35 @@ public class SubjectExamServiceImpl implements SubjectExamService {
         exam.setToTime(subjectExamDTO.getToTime());
         Set<Room> rooms = this.roomRepository.findByNameIn(subjectExamDTO.getRoomNames());
         exam.setRooms(rooms);
+
+        this.subjectExamRepository.save(exam);
+        return Optional.of(exam);
+    }
+
+    @Override
+    public Optional<SubjectExam> save(AddExamDTO addExamDTO) {
+        YearExamSession yearExamSession = this.sessionRepository.findById(addExamDTO.getSessionId())
+                .orElseThrow(() -> new RuntimeException());
+
+        Subject subject = this.subjectRepository.findById(addExamDTO.getSubjectId())
+                .orElseThrow(() -> new RuntimeException());
+
+        JoinedSubject joinedSubject = this.joinedSubjectRepository.findById(subject.getAbbreviation())
+                .orElseThrow(() -> new RuntimeException());
+
+        Set<Room> rooms = this.roomRepository.findByNameIn(addExamDTO.getRoomNames());
+
+        ExamDefinition examDefinition = new ExamDefinition();
+        examDefinition.setId( subject.getAbbreviation() + "-" + yearExamSession.getSession() );
+        examDefinition.setSubject(joinedSubject);
+        examDefinition.setExamSession(yearExamSession.getSession());
+        this.examDefinitionRepository.save(examDefinition);
+
+        SubjectExam exam = new SubjectExam(examDefinition, yearExamSession);
+        exam.setFromTime(addExamDTO.getFromTime());
+        exam.setToTime(addExamDTO.getToTime());
+        exam.setRooms(rooms);
+        exam.setComment(addExamDTO.getComment());
 
         this.subjectExamRepository.save(exam);
         return Optional.of(exam);

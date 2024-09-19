@@ -27,7 +27,9 @@
   margin-right: 10px; /* Space between items */
 }
 
-.modal_default_form_item_datetime {
+.modal_default_form_item_datetime, 
+.modal_default_form_item_text,
+.modal_default_form_item_searchable {
   display: block;
 }
 

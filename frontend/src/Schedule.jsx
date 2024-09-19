@@ -129,22 +129,13 @@ const Schedule = ({ startDate, onEventsChange }) => {
           text: "Избриши",
           onClick: async (args) => {
             const eventId = args.source.data.id;
-
-            // Show confirmation modal
-            const confirmation = await DayPilot.Modal.confirm("Дали сте сигурни дека сакате да го избришете овој испит?");
-            if (confirmation.result) {
-              // If user confirms deletion
-              try {
-                await deleteExam(eventId);
-                console.log(`Exam with ID ${eventId} deleted successfully.`);
-                // Refresh events after deletion
-                refreshEvents();
-              } catch (error) {
-                console.error(`Failed to delete exam with ID ${eventId}: `, error);
-              }
-            } else {
-              // If user cancels deletion
-              console.log("Deletion canceled.");
+            try {
+              await deleteExam(eventId);
+              console.log(`Exam with ID ${eventId} deleted successfully.`);
+              // Refresh events after deletion
+              refreshEvents();
+            } catch (error) {
+              console.error(`Failed to delete exam with ID ${eventId}: `, error);
             }
           }
         }
