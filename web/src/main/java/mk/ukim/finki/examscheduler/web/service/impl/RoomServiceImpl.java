@@ -1,6 +1,5 @@
 package mk.ukim.finki.examscheduler.web.service.impl;
 
-import mk.ukim.finki.examscheduler.web.model.Room;
 import mk.ukim.finki.examscheduler.web.model.projections.RoomNameProjection;
 import mk.ukim.finki.examscheduler.web.repository.RoomRepository;
 import mk.ukim.finki.examscheduler.web.service.RoomService;
