@@ -3,7 +3,7 @@ import './App.css';
 import Schedule from './Schedule';
 import Calendar from './Calendar';
 import { DayPilot } from '@daypilot/daypilot-lite-react';
-import { fetchDataForExamDialog, addExam } from './api/api';  // Import addExam here
+import { fetchDataForExamDialog, addExam } from './api/api';
 import headerLogo from './assets/finki_mk.png';
 
 function App() {
@@ -12,7 +12,6 @@ function App() {
   const [examDialogData, setExamDialogData] = useState(null);
   const [selectedRooms, setSelectedRooms] = useState([]);
 
-  // Fetch data for the modal dialog when the component loads
   useEffect(() => {
     fetchDataForExamDialog()
       .then(response => {
@@ -23,14 +22,12 @@ function App() {
       });
   }, []);
 
-  // Open the modal dialog with searchable dropdowns and checkboxes for rooms
   const openModalDialog = async () => {
     if (!examDialogData) {
       alert("Loading exam dialog data, please wait...");
       return;
     }
-  
-    // Define the form for the modal dialog
+
     const form = [
       { type: 'title', name: "Внеси термин" },
       {
@@ -70,51 +67,61 @@ function App() {
         id: "comment",
         type: "text"
       },
-      // Map room checkboxes
       ...examDialogData.rooms.map(room => ({
         type: 'checkbox',
-        id: room,  // Using the room string as the checkbox id
-        name: room  // Display the room string
+        id: room,
+        name: room
       }))
     ];
-  
-    // Initialize default data for the form, setting all checkboxes to false
+
     const data = {
       subjectId: "",
       sessionId: "",
       fromTime: DayPilot.Date.today(),
       toTime: DayPilot.Date.today().addHours(1),
       comment: "",
-      // Initialize room checkboxes as unchecked
       ...examDialogData.rooms.reduce((acc, room) => {
-        acc[room] = false;  // Unchecked by default
+        acc[room] = false;
         return acc;
       }, {})
     };
-  
-    // Open the modal dialog
+
     const modal = await DayPilot.Modal.form(form, data);
-  
+
     if (!modal.canceled) {
       const { subjectId, sessionId, fromTime, toTime, comment } = modal.result;
-  
-      // Collect selected rooms (those checkboxes that are checked)
-      const selectedRooms = examDialogData.rooms
-        .filter(room => modal.result[room] === true)  // Only rooms where the checkbox is checked
-        .map(room => room);  // Keep the room strings as is
-  
-      // Prepare the data to send to the API
-      const examData = {
+      console.log("modal.result: ", modal.result);
+
+      // Normalize the room selection from modal.result
+      const roomNames = [];
+
+      for (const [key, value] of Object.entries(modal.result)) {
+        if (typeof value === 'boolean' && value) {
+          roomNames.push(key); // Add the exact room key without trimming
+        } else if (typeof value === 'object' && value !== null) {
+          // Handle nested objects
+          for (const [nestedKey, nestedValue] of Object.entries(value)) {
+            if (nestedValue) {
+              roomNames.push(`${key}.${nestedKey}`);
+            }
+          }
+        }
+      }
+
+      console.log("Room names: ", roomNames);
+
+
+
+      const requestBody = {
         subjectId,
         sessionId,
         fromTime,
         toTime,
         comment,
-        roomNames: selectedRooms  // Send the selected room strings
+        roomNames  // Send the selected room strings
       };
-  
-      // Call the API to add the exam
-      addExam(examData)
+
+      addExam(requestBody)
         .then(() => {
           console.log("Exam added successfully.");
         })
@@ -123,8 +130,6 @@ function App() {
         });
     }
   };
-  
-   
 
   return (
     <div className="container">
@@ -137,14 +142,14 @@ function App() {
         <div className="calendar-wrapper">
           <Calendar onDateSelect={setStartDate} events={events} />
         </div>
-        <br/>
-        <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}> {/* Ensure this container can scroll horizontally */}
+        <br />
+        <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}>
           <button onClick={openModalDialog} style={{ marginBottom: '10px' }}>
-            Add Exam
+            Додади испит
           </button>
           <Schedule
             startDate={startDate}
-            onEventsChange={setEvents} // Pass events to Calendar
+            onEventsChange={setEvents}
           />
         </div>
       </div>
