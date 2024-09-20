@@ -98,7 +98,7 @@ const Schedule = ({ startDate, onEventsChange }) => {
           rooms: rooms,
           barColor: getColorByStudyCycle(exam.studyCycle),
           moveVDisabled: true,
-          moveHDisabled: false,
+          moveHDisabled: true,
           resource: `R${columns.findIndex(col => col.name === roomName) + 1}`
         }));
       });
@@ -206,7 +206,8 @@ const Schedule = ({ startDate, onEventsChange }) => {
         startDate={startDate}
         columns={columns}
         events={events}
-        eventMoveHandling='true'
+        eventMoveHandling='false'
+        eventResizeHandling='false'
         cellWidth={200}
       />
     </div>
