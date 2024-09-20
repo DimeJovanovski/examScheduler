@@ -30,9 +30,11 @@ VALUES
     ('2024-ДИГБИБ-СЕПТЕМВРИ', '2024 Август-Септемвриска испитна сесија', 'ДИГБИБ-СЕПТЕМВРИ', 90, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-05T09:00:00', '2024-09-05T11:00:00', ''),
     ('2024-ВИРТ-СЕПТЕМВРИ', '2024 Август-Септемвриска испитна сесија', 'ВИРТ-СЕПТЕМВРИ', 90, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-05T14:00:00', '2024-09-05T16:00:00', '');
 
-INSERT INTO subject_exam (id, session_name, definition_id, duration_minutes, previous_year_attendants_number, previous_year_total_students, attendants_number, total_students, expected_number, num_repetitions, from_time, to_time, comment)
-VALUES
-    ('2024-BIZSTAT-SEPTEMBER', '2024 Август-Септемвриска испитна сесија', 'БИЗСТАТ-СЕПТЕМВРИ', 90, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-05T10:00:00', '2024-09-05T11:30:00', '');
+
+
+
+
+
 
 
 --     ('2024-АПС-СЕПТЕМВРИ', '2024 Август-Септемвриска испитна сесија', 'АПС-СЕПТЕМВРИ', 90, NULL, NULL, NULL, NULL, NULL, NULL, '2024-09-10T10:00:00', '2024-09-10T12:00:00', ''),

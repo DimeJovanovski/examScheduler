@@ -123,8 +123,3 @@ VALUES
     ('2024-ДИГБИБ-СЕПТЕМВРИ', 'Б3.2'),
 
     ('2024-ВИРТ-СЕПТЕМВРИ', 'Лаб. 13');
-
-
-INSERT INTO subject_exam_rooms (subject_exam_id, rooms_name)
-VALUES
-    ('2024-BIZSTAT-SEPTEMBER', 'Лаб. 3');
