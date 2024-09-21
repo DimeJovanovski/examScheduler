@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
 import { fetchRoomNames, fetchExams, deleteExam, editExam } from './api/api'; // Import API functions
 import { getColorByStudyCycle } from './utils/studyCycleColors';
 import { Modal } from "@daypilot/modal";
 
-const Schedule = ({ startDate, onEventsChange }) => {
+const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
   const [columns, setColumns] = useState([]); // Room names
   const [events, setEvents] = useState([]);   // Exams
 
@@ -110,6 +110,11 @@ const Schedule = ({ startDate, onEventsChange }) => {
       console.error("Error refreshing events:", error);
     }
   };
+
+  // Expose the refreshEvents method to the parent using the ref
+  useImperativeHandle(ref, () => ({
+    refreshEvents
+  }));
 
   // Configuration for the DayPilot Calendar
   const config = {
@@ -219,6 +224,6 @@ const Schedule = ({ startDate, onEventsChange }) => {
       />
     </div>
   );
-}
+})
 
 export default Schedule;

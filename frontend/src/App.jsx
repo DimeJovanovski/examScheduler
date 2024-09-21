@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Schedule from './Schedule';
 import Calendar from './Calendar';
@@ -11,6 +11,7 @@ function App() {
   const [events, setEvents] = useState([]);
   const [examDialogData, setExamDialogData] = useState(null);
   const [selectedRooms, setSelectedRooms] = useState([]);
+  const scheduleRef = useRef(null);
 
   useEffect(() => {
     fetchDataForExamDialog()
@@ -124,10 +125,16 @@ function App() {
       addExam(requestBody)
         .then(() => {
           console.log("Exam added successfully.");
+          // Call refreshEvents from the Schedule component using the ref
+          if (scheduleRef.current) {
+            scheduleRef.current.refreshEvents();  // Call refreshEvents via ref
+          }
         })
         .catch((error) => {
           console.error("Error adding exam:", error);
         });
+
+      
     }
   };
 
@@ -144,12 +151,14 @@ function App() {
         </div>
         <br />
         <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}>
-          <button onClick={openModalDialog} style={{ marginBottom: '10px' }}>
+          <button className="add-exam-button" onClick={openModalDialog} style={{ marginBottom: '10px', backgroundColor: "rgb(243, 243, 243)", borderColor: "rgb(192, 192, 192)", borderRadius: "0"
+           }}>
             Додади испит
           </button>
           <Schedule
             startDate={startDate}
             onEventsChange={setEvents}
+            ref={scheduleRef}
           />
         </div>
       </div>
