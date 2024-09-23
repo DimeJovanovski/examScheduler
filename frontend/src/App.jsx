@@ -53,9 +53,17 @@ function App() {
     }
   };
 
+  const userRole = localStorage.getItem('role');
+  const hasAccess = (role) => {
+    // Define access control logic
+    if (role === 'ADMIN') return true;
+    return false;
+  };
+
   // Logout handler
   const handleLogout = () => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('role');
     setAuthenticated(false);
     navigate('/login');
   };
@@ -207,10 +215,11 @@ function App() {
         </div>
         <br />
         <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}>
-          <button className="add-exam-button" onClick={openModalDialog} style={{ marginBottom: '10px', backgroundColor: "rgb(243, 243, 243)", borderColor: "rgb(192, 192, 192)", borderRadius: "0"
-           }}>
-            Додади испит
-          </button>
+          {hasAccess(userRole) && (
+            <button className="add-exam-button" onClick={openModalDialog} style={{ marginBottom: '10px' }}>
+              Додади испит
+            </button>
+          )}
           <Schedule
             startDate={startDate}
             onEventsChange={setEvents}

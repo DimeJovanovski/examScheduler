@@ -38,7 +38,11 @@ public class LoginRestController {
         final UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        // Assuming UserDetails implementation has a method to get the role
+        String role = userService.getRoleByUsername(userDetails.getUsername()); // Adjust this method as necessary
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, role)); // Include role in the response
     }
+
 }
 

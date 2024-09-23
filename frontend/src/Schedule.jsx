@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { DayPilot, DayPilotCalendar } from "@daypilot/daypilot-lite-react";
-import { fetchRoomNames, fetchExams, deleteExam, editExam } from './api/api'; // Import API functions
+import { fetchRoomNames, fetchExams, deleteExam, editExam } from './api/api';
 import { getColorByStudyCycle } from './utils/studyCycleColors';
 import { Modal } from "@daypilot/modal";
 
 const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
-  const [columns, setColumns] = useState([]); // Room names
-  const [events, setEvents] = useState([]);   // Exams
+  const [columns, setColumns] = useState([]);
+  const [events, setEvents] = useState([]);
+  
+  const userRole = localStorage.getItem('role');
 
-  // Function to format the date-time for input fields
   const formatTime = (dateTime) => {
     const date = new Date(dateTime);
     const year = date.getFullYear();
@@ -17,11 +18,9 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
     const hours = (`0${date.getHours()}`).slice(-2);
     const minutes = (`0${date.getMinutes()}`).slice(-2);
     const seconds = (`0${date.getSeconds()}`).slice(-2);
-  
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   };
 
-  // Function to open and handle the edit form
   const openEditForm = async (event) => {
     const form = [
       { type: 'title', name: `${event.text} (${event.subjectAbbreviation})` },
@@ -75,7 +74,6 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
 
       try {
         await editExam(event.id, requestBody);
-        // Refresh events after editing
         refreshEvents();
       } catch (error) {
         console.error('Failed to update exam:', error);
@@ -83,7 +81,6 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
     }
   };
 
-  // Function to refresh the events list
   const refreshEvents = async () => {
     try {
       const examsResponse = await fetchExams();
@@ -111,47 +108,46 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
     }
   };
 
-  // Expose the refreshEvents method to the parent using the ref
   useImperativeHandle(ref, () => ({
     refreshEvents
   }));
 
-  // Configuration for the DayPilot Calendar
+  const contextMenuItems = [
+    {
+      text: "Уреди",
+      onClick: (args) => {
+        openEditForm(args.source.data);
+      },
+      visible: userRole === 'ADMIN'
+    },
+    {
+      text: "Избриши",
+      onClick: async (args) => {
+        const eventId = args.source.data.id;
+        const confirmation = await DayPilot.Modal.confirm("Дали сте сигурни дека сакате да го избришете испитот?");
+        if (confirmation.result) {
+          try {
+            await deleteExam(eventId);
+            console.log(`Deleted exam with id ${eventId} successfully.`);
+            refreshEvents();
+          } catch (error) {
+            console.error(`Failed to delete exam with id ${eventId}.`, error);
+          }
+        } else {
+          console.log("Deletion canceled.");
+        }
+      },
+      visible: userRole === 'ADMIN'
+    }
+  ].filter(item => item.visible); // Filter based on visibility
+
   const config = {
     viewType: "Resources",
     cellWidth: 300,
     eventHeight: 30,
     showEventTime: true,
     contextMenu: new DayPilot.Menu({
-      items: [
-        {
-          text: "Уреди",
-          onClick: (args) => {
-            openEditForm(args.source.data);
-          }
-        },
-        {
-          text: "Избриши",
-          onClick: async (args) => {
-            const eventId = args.source.data.id;
-            
-            // Show deletion confirmation dialog
-            const confirmation = await DayPilot.Modal.confirm("Дали сте сигурни дека сакате да го избришете испитот?");
-            if (confirmation.result) {
-              // if user confirms
-              try {
-                await deleteExam(eventId);
-                console.error(`Deleted exam with id ${eventId} successfully.`);
-                refreshEvents();
-              } catch(error) {
-                console.error(`Failed to delete exam with id ${eventId}.`);
-              }
-            } else {
-              console.log("Deletion canceled.");
-            }
-          }
-        }
-      ]
+      items: contextMenuItems,
     }),
     onEventClick: (args) => {
       const event = args.e.data;
@@ -174,13 +170,12 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
     }
   };
 
-  // Fetch data on component mount
   useEffect(() => {
     Promise.all([fetchRoomNames(), fetchExams()])
       .then(([roomsResponse, examsResponse]) => {
         const roomColumns = roomsResponse.data.map((room, index) => ({
           name: room.name,
-          id: `R${index + 1}` // Generate unique IDs for rooms
+          id: `R${index + 1}`
         }));
         setColumns(roomColumns);
 
@@ -224,6 +219,6 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
       />
     </div>
   );
-})
+});
 
 export default Schedule;

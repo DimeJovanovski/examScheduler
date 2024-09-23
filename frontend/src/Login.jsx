@@ -13,15 +13,19 @@ function Login({ setAuthenticated, onRegisterClick }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(credentials);
-      localStorage.setItem('jwt', response.data.jwt);
-      console.log('Token stored:', response.data.jwt);
-      setAuthenticated(true);
+        const response = await login(credentials);
+        localStorage.setItem('jwt', response.data.jwt);
+        localStorage.setItem('role', response.data.role); // Store the user role
+        console.log('Role: ', response.data.role);
+        console.log('Token stored:', response.data.jwt);
+        setAuthenticated(true);
     } catch (error) {
-      setError('Invalid username or password');
-      console.error("Login failed:", error);
+        setError('Invalid username or password');
+        console.error("Login failed:", error);
     }
-  };
+};
+
+  
 
   return (
     <div className="login-container">

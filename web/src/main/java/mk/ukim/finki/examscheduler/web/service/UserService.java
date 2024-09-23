@@ -44,4 +44,10 @@ public class UserService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
+    public String getRoleByUsername(String username) {
+        // Fetch user details from your user repository
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.get().getRole().name(); // Assuming User has a getRole method
+    }
 }
