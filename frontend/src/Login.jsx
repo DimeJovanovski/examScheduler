@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { login } from './api/api'; // Make sure you have a login function in your api.js
 
-function Login({ setAuthenticated }) {
+function Login({ setAuthenticated, onRegisterClick }) {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
 
@@ -46,6 +46,12 @@ function Login({ setAuthenticated }) {
         />
         <button type="submit">Login</button>
       </form>
+      <p>
+        Don't have an account?
+        <span onClick={onRegisterClick} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+          Register here
+        </span>
+      </p>
     </div>
   );
 }

@@ -6,10 +6,12 @@ import { DayPilot } from '@daypilot/daypilot-lite-react';
 import { fetchDataForExamDialog, addExam } from './api/api';
 import headerLogo from './assets/finki_mk.png';
 import Login from './Login';  // Import the Login component
+import Register from './Register'; // Import the Register component
 import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('jwt'));  // Check if the user is already logged in
+  const [showRegister, setShowRegister] = useState(false); // State to toggle between login and register
   const [startDate, setStartDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [examDialogData, setExamDialogData] = useState(null);
@@ -56,6 +58,16 @@ function App() {
     localStorage.removeItem('jwt');
     setAuthenticated(false);
     navigate('/login');
+  };
+
+  // Function to toggle to the Register component
+  const handleToggleRegister = () => {
+    setShowRegister(true);
+  };
+
+  // Function to toggle back to the Login component
+  const handleBackToLogin = () => {
+    setShowRegister(false);
   };
 
   // Open modal dialog for adding an exam
@@ -147,8 +159,6 @@ function App() {
 
       console.log("Room names: ", roomNames);
 
-
-
       const requestBody = {
         subjectId,
         sessionId,
@@ -174,8 +184,13 @@ function App() {
     }
   };
 
+  // Conditional rendering for Login and Register components
   if (!authenticated) {
-    return <Login setAuthenticated={setAuthenticated} />;
+    return showRegister ? (
+      <Register onBack={handleBackToLogin} /> // Render Register component
+    ) : (
+      <Login setAuthenticated={setAuthenticated} onRegisterClick={handleToggleRegister} /> // Render Login component
+    );
   }
 
   return (
