@@ -5,24 +5,60 @@ import Calendar from './Calendar';
 import { DayPilot } from '@daypilot/daypilot-lite-react';
 import { fetchDataForExamDialog, addExam } from './api/api';
 import headerLogo from './assets/finki_mk.png';
+import Login from './Login';  // Import the Login component
+import { useNavigate } from 'react-router-dom';
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('jwt'));  // Check if the user is already logged in
   const [startDate, setStartDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [examDialogData, setExamDialogData] = useState(null);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const scheduleRef = useRef(null);
+  const navigate = useNavigate(); // For navigating programmatically
 
+  // Effect to fetch data after login
   useEffect(() => {
-    fetchDataForExamDialog()
-      .then(response => {
-        setExamDialogData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching exam dialog data:", error);
-      });
-  }, []);
+    if (authenticated) {
+      fetchDataForExamDialog()
+        .then(response => {
+          setExamDialogData(response.data);
+          refreshEvents(); // Fetch events after login
+        })
+        .catch(error => {
+          console.error("Error fetching exam dialog data:", error);
+          handleLogout();
+        });
+    }
+  }, [authenticated]);
 
+  const refreshEvents = async () => {
+    try {
+      const examsResponse = await fetchExams();
+      const examEvents = examsResponse.data.map(exam => ({
+        id: exam.id,
+        text: exam.subjectName,
+        start: exam.fromTime,
+        end: exam.toTime,
+        // Add other properties as needed
+      }));
+      setEvents(examEvents);
+      if (scheduleRef.current) {
+        scheduleRef.current.refreshEvents();
+      }
+    } catch (error) {
+      console.error("Error refreshing events:", error);
+    }
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setAuthenticated(false);
+    navigate('/login');
+  };
+
+  // Open modal dialog for adding an exam
   const openModalDialog = async () => {
     if (!examDialogData) {
       alert("Loading exam dialog data, please wait...");
@@ -138,11 +174,16 @@ function App() {
     }
   };
 
+  if (!authenticated) {
+    return <Login setAuthenticated={setAuthenticated} />;
+  }
+
   return (
     <div className="container">
       <div className="dpw-header">
         <div className="dpw-header-inner" style={{ textAlign: "start", margin: "0px", padding: "0px" }}>
           <img src={headerLogo} style={{ height: "50px", padding: "5px 0 0 20px", margin: "0px" }} alt="FINKI logo" />
+          <button onClick={handleLogout}>Logout</button>
         </div>
       </div>
       <div className="content-container">

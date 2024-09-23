@@ -1,67 +1,61 @@
 import axios from 'axios';
 
-const apiUri = "http://localhost:9091/api";
+const api = axios.create({
+  baseURL: 'http://localhost:9091/api', // Replace with your actual API URL
+});
 
-// Fetch room names
-export const fetchRoomNames = () => {
-  return axios.get(`${apiUri}/rooms/names`);
+// Interceptor to add JWT to headers
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('jwt');
+  if (token) {
+    config.headers.Authorization = `${token}`;
+  }
+  return config;
+});
+
+// Authentication
+export const login = async (credentials) => {
+  const response = await api.post('/login', credentials);
+  return response;
 };
 
-// Fetch exam data
+// Register a new user
+export const register = async (userData) => {
+  const response = await api.post('/register', userData);
+  return response;
+};
+
+// Logout user (just clear the JWT on the client-side)
+export const logout = () => {
+  localStorage.removeItem('jwt'); // Clear JWT from local storage
+};
+
+// Fetch Exams
 export const fetchExams = () => {
-  return axios.get(`${apiUri}/exams`);
+  return api.get('/exams');
 };
 
-// Fetch data for add exam dialog
-export const fetchDataForExamDialog = () => {
-  return axios.get(`${apiUri}/exams/addExamDialogData`);
+// Add an Exam
+export const addExam = (data) => {
+  return api.post('/exams/add', data);
 };
 
-// Add a new exam to the database
-export const addExam = (examData) => {
-  return axios.post(`${apiUri}/exams/add`, examData, {
-    headers: {
-      'Content-Type': 'application/json'  // Ensure that the data is sent as JSON
-    }
-  })
-    .then(response => {
-      console.log("Exam added successfully:", response.data);
-      return response.data;
-    })
-    .catch(error => {
-      console.error("Failed to add exam:", error);
-      throw error;  // Rethrow the error so it can be handled by the caller
-    });
+// Edit an Exam
+export const editExam = (id, data) => {
+  return api.put(`/exams/edit/${id}`, data);
 };
 
-// Delete an exam from the backend API using the exam ID
+// Delete an Exam
 export const deleteExam = (id) => {
-  // Make the DELETE request, with the id as part of the URL
-  return axios.delete(`${apiUri}/exams/delete/${id}`)
-    .then(response => {
-      console.log(`Exam with ID ${id} deleted successfully`);
-      return response.data;  // Return the response data (optional)
-    })
-    .catch(error => {
-      console.error(`Failed to delete exam with ID ${id}: `, error);
-      throw error;  // Rethrow the error so it can be handled by the caller
-    });
+  return api.delete(`/exams/delete/${id}`);
 };
 
-// Edit an exam in the backend API using the exam ID and the updated data
-export const editExam = (id, updatedData) => {
-  return axios.put(`${apiUri}/exams/edit/${id}`, updatedData, {
-    headers: {
-      'Content-Type': 'application/json'  // Ensure that the data is sent as JSON
-    }
-  })
-    .then(response => {
-      console.log(`Exam with ID ${id} updated successfully`);
-      return response.data;
-    })
-    .catch(error => {
-      console.error(`Failed to update exam with ID ${id}: `, error);
-      throw error;
-    });
+// Fetch Room Names
+export const fetchRoomNames = () => {
+  return api.get('/rooms/names');
 };
 
+// Fetch Data for Exam Dialog
+export const fetchDataForExamDialog = () => {
+  return api.get('/exams/addExamDialogData');
+};
