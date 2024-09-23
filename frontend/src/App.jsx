@@ -5,24 +5,80 @@ import Calendar from './Calendar';
 import { DayPilot } from '@daypilot/daypilot-lite-react';
 import { fetchDataForExamDialog, addExam } from './api/api';
 import headerLogo from './assets/finki_mk.png';
+import Login from './Login';  // Import the Login component
+import Register from './Register'; // Import the Register component
+import { useNavigate } from 'react-router-dom';
 
 function App() {
+  const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('jwt'));  // Check if the user is already logged in
+  const [showRegister, setShowRegister] = useState(false); // State to toggle between login and register
   const [startDate, setStartDate] = useState(new Date());
   const [events, setEvents] = useState([]);
   const [examDialogData, setExamDialogData] = useState(null);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const scheduleRef = useRef(null);
+  const navigate = useNavigate(); // For navigating programmatically
 
+  // Effect to fetch data after login
   useEffect(() => {
-    fetchDataForExamDialog()
-      .then(response => {
-        setExamDialogData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching exam dialog data:", error);
-      });
-  }, []);
+    if (authenticated) {
+      fetchDataForExamDialog()
+        .then(response => {
+          setExamDialogData(response.data);
+          refreshEvents(); // Fetch events after login
+        })
+        .catch(error => {
+          console.error("Error fetching exam dialog data:", error);
+          handleLogout();
+        });
+    }
+  }, [authenticated]);
 
+  const refreshEvents = async () => {
+    try {
+      const examsResponse = await fetchExams();
+      const examEvents = examsResponse.data.map(exam => ({
+        id: exam.id,
+        text: exam.subjectName,
+        start: exam.fromTime,
+        end: exam.toTime,
+        // Add other properties as needed
+      }));
+      setEvents(examEvents);
+      if (scheduleRef.current) {
+        scheduleRef.current.refreshEvents();
+      }
+    } catch (error) {
+      console.error("Error refreshing events:", error);
+    }
+  };
+
+  const userRole = localStorage.getItem('role');
+  const hasAccess = (role) => {
+    // Define access control logic
+    if (role === 'ADMIN') return true;
+    return false;
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('role');
+    setAuthenticated(false);
+    navigate('/login');
+  };
+
+  // Function to toggle to the Register component
+  const handleToggleRegister = () => {
+    setShowRegister(true);
+  };
+
+  // Function to toggle back to the Login component
+  const handleBackToLogin = () => {
+    setShowRegister(false);
+  };
+
+  // Open modal dialog for adding an exam
   const openModalDialog = async () => {
     if (!examDialogData) {
       alert("Loading exam dialog data, please wait...");
@@ -111,8 +167,6 @@ function App() {
 
       console.log("Room names: ", roomNames);
 
-
-
       const requestBody = {
         subjectId,
         sessionId,
@@ -138,11 +192,21 @@ function App() {
     }
   };
 
+  // Conditional rendering for Login and Register components
+  if (!authenticated) {
+    return showRegister ? (
+      <Register onBack={handleBackToLogin} /> // Render Register component
+    ) : (
+      <Login setAuthenticated={setAuthenticated} onRegisterClick={handleToggleRegister} /> // Render Login component
+    );
+  }
+
   return (
     <div className="container">
       <div className="dpw-header">
         <div className="dpw-header-inner" style={{ textAlign: "start", margin: "0px", padding: "0px" }}>
           <img src={headerLogo} style={{ height: "50px", padding: "5px 0 0 20px", margin: "0px" }} alt="FINKI logo" />
+          <button onClick={handleLogout}>Logout</button>
         </div>
       </div>
       <div className="content-container">
@@ -151,10 +215,11 @@ function App() {
         </div>
         <br />
         <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}>
-          <button className="add-exam-button" onClick={openModalDialog} style={{ marginBottom: '10px', backgroundColor: "rgb(243, 243, 243)", borderColor: "rgb(192, 192, 192)", borderRadius: "0"
-           }}>
-            Додади испит
-          </button>
+          {hasAccess(userRole) && (
+            <button className="add-exam-button" onClick={openModalDialog} style={{ marginBottom: '10px' }}>
+              Додади испит
+            </button>
+          )}
           <Schedule
             startDate={startDate}
             onEventsChange={setEvents}
