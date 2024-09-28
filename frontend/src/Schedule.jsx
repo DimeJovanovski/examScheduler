@@ -88,8 +88,9 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
         const rooms = `${exam.roomNames}`.replace(/,/g, ", ");
         return exam.roomNames.map((roomName) => ({
           id: `${exam.id}`,
-          text: `${exam.subjectName}`,
-          subjectAbbreviation: exam.subjectAbbreviation,
+          text: `${exam.subjectAbbreviation}`,
+          subjectAbbreviation: `${exam.subjectAbbreviation}`,
+          subjectName: `${exam.subjectName}`,
           start: exam.fromTime,
           end: exam.toTime,
           rooms: rooms,
@@ -162,7 +163,7 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
       }
 
       DayPilot.Modal.alert(`
-        <h2>${event.text} (${event.subjectAbbreviation})</h2>
+        <h2>${event.subjectName} (${event.subjectAbbreviation})</h2>
         <b>Од:</b> ${formatDateTime(event.start)}<br>
         <b>До:</b> ${formatDateTime(event.end)}<br>
         <b>Простории:</b> ${event.rooms}
@@ -183,8 +184,9 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
           const rooms = `${exam.roomNames}`.replace(/,/g, ", ");
           return exam.roomNames.map((roomName) => ({
             id: `${exam.id}`,
-            text: `${exam.subjectName}`,
-            subjectAbbreviation: exam.subjectAbbreviation,
+            text: `${exam.subjectAbbreviation}`,
+            subjectAbbreviation: `${exam.subjectAbbreviation}`,
+            subjectName: `${exam.subjectName}`,
             start: exam.fromTime,
             end: exam.toTime,
             rooms: rooms,
