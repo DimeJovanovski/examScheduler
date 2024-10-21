@@ -8,6 +8,7 @@ import headerLogo from './assets/finki_mk.png';
 import Login from './Login';  // Import the Login component
 import Register from './Register'; // Import the Register component
 import { useNavigate } from 'react-router-dom';
+import Legend from './Legend';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(!!localStorage.getItem('jwt'));  // Check if the user is already logged in
@@ -204,9 +205,9 @@ function App() {
   return (
     <div className="container">
       <div className="dpw-header">
-        <div className="dpw-header-inner" style={{ textAlign: "start", margin: "0px", padding: "0px" }}>
+      <div className="dpw-header-inner">
           <img src={headerLogo} style={{ height: "50px", padding: "5px 0 0 20px", margin: "0px" }} alt="FINKI logo" />
-          <button onClick={handleLogout}>Logout</button>
+          <button onClick={handleLogout} className="logout-button">Одјава</button>
         </div>
       </div>
       <div className="content-container">
@@ -227,6 +228,7 @@ function App() {
           />
         </div>
       </div>
+      <Legend />
     </div>
   );
 }

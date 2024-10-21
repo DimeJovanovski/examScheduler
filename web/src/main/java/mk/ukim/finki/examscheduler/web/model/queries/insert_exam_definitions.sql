@@ -84,3 +84,58 @@ VALUES
     ('ИТСУ-СЕПТЕМВРИ', 'ITSU', 'SEPTEMBER', 90, 'LAB', ''),
     ('МАТ2-СЕПТЕМВРИ', 'MAT2', 'SEPTEMBER', 90, 'LAB', ''),
     ('АДСБ-СЕПТЕМВРИ', 'ADSB', 'SEPTEMBER', 90, 'LAB', '');
+
+
+-- MASTERS STUDIES
+INSERT INTO exam_definition (id, subject_abbreviation, exam_session, duration_minutes, type, note)
+VALUES
+    ('DEVOPS_SD-SEPTEMBER', 'DEVOPS_SD', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SLM-SEPTEMBER', 'SLM', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SDP-SEPTEMBER', 'SDP', 'SEPTEMBER', 90, 'LAB', ''),
+    ('MBSE-SEPTEMBER', 'MBSE', 'SEPTEMBER', 90, 'LAB', ''),
+    ('ACG-SEPTEMBER', 'ACG', 'SEPTEMBER', 90, 'LAB', ''),
+    ('AADIS-SEPTEMBER', 'AADIS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('APVS-SEPTEMBER', 'APVS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('DATAVIZ-SEPTEMBER', 'DATAVIZ', 'SEPTEMBER', 90, 'LAB', ''),
+    ('VGDVIZ-SEPTEMBER', 'VGDVIZ', 'SEPTEMBER', 90, 'LAB', ''),
+    ('BIOMSYS-SEPTEMBER', 'BIOMSYS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('BIZD-SEPTEMBER', 'BIZD', 'SEPTEMBER', 90, 'LAB', ''),
+
+    ('AMWAPPS-SEPTEMBER', 'AMWAPPS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('FM-SEPTEMBER', 'FM', 'SEPTEMBER', 90, 'LAB', ''),
+    ('MEDINFO-SEPTEMBER', 'MEDINFO', 'SEPTEMBER', 90, 'LAB', ''),
+    ('AENGSR-SEPTEMBER', 'AENGSR', 'SEPTEMBER', 90, 'LAB', ''),
+    ('RMWT-SEPTEMBER', 'RMWT', 'SEPTEMBER', 90, 'LAB', ''),
+    ('DSEE-SEPTEMBER', 'DSEE', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SECS-SEPTEMBER', 'SECS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('MULTMODINT-SEPTEMBER', 'MULTMODINT', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SOFTARCH-SEPTEMBER', 'SOFTARCH', 'SEPTEMBER', 90, 'LAB', ''),
+    ('DSIOT-SEPTEMBER', 'DSIOT', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SOFREL-SEPTEMBER', 'SOFREL', 'SEPTEMBER', 90, 'LAB', ''),
+    ('ENGETH-SEPTEMBER', 'ENGETH', 'SEPTEMBER', 90, 'LAB', '');
+
+-- PHD STUDIES
+INSERT INTO exam_definition (id, subject_abbreviation, exam_session, duration_minutes, type, note)
+VALUES
+    ('ASCS-SEPTEMBER', 'ASCS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('ASST-SEPTEMBER', 'ASST', 'SEPTEMBER', 90, 'LAB', ''),
+    ('BIOI-SEPTEMBER', 'BIOI', 'SEPTEMBER', 90, 'LAB', ''),
+    ('ESTC-SEPTEMBER', 'ESTC', 'SEPTEMBER', 90, 'LAB', ''),
+    ('EVVSR-SEPTEMBER', 'EVVSR', 'SEPTEMBER', 90, 'LAB', ''),
+    ('ATCSHPC-SEPTEMBER', 'ATCSHPC', 'SEPTEMBER', 90, 'LAB', ''),
+    ('PRACCRYPTO-SEPTEMBER', 'PRACCRYPTO', 'SEPTEMBER', 90, 'LAB', ''),
+    ('AIWS-SEPTEMBER', 'AIWS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('BDA-SEPTEMBER', 'BDA', 'SEPTEMBER', 90, 'LAB', ''),
+    ('AWNET-SEPTEMBER', 'AWNET', 'SEPTEMBER', 90, 'LAB', ''),
+    ('AMIS-SEPTEMBER', 'AMIS', 'SEPTEMBER', 90, 'LAB', ''),
+    ('NITT-SEPTEMBER', 'NITT', 'SEPTEMBER', 90, 'LAB', ''),
+    ('CPBIOINFO-SEPTEMBER', 'CPBIOINFO', 'SEPTEMBER', 90, 'LAB', ''),
+    ('SDS-SEPTEMBER', 'SDS', 'SEPTEMBER', 90, 'LAB', '');
+
+
+
+
+
+
+
+

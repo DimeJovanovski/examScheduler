@@ -152,12 +152,26 @@ body, input, select, button {
   color: white;
 }
 .dpw-header-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  position: relative;
+  display: flex;           /* Use flexbox for layout */
+  align-items: center;     /* Vertically center the items */
+  justify-content: space-between;  /* Push items to opposite ends */
   padding: 0;
+  margin: 0;
+}
+
+.logout-button {
+  margin-right: 20px;  /* Adjust space from the right edge */
+  padding: 5px 10px;
+  font-size: 16px;
+  background-color: #ff4d4d;  /* Optional: Add color for styling */
+  border: none;
+  border-radius: 5px;
   color: white;
-  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #ff6666;  /* Optional: Hover effect */
 }
 
 .dpw-header-item {
@@ -814,4 +828,41 @@ body, html {
   .calendar-wrapper, .schedule-wrapper {
     width: 100%;
   }
+}
+
+.legend-box {
+  position: fixed;  /* Fixed positioning for scroll support */
+  bottom: 10px;
+  left: 10px;
+  border: 1px solid rgb(192, 192, 192);
+  background-color: rgb(243, 243, 243);
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  width: 180px;
+  z-index: 1000;  /* Ensure it stays above other content */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+}
+
+.undergraduate {
+  background-color: #0000FF;
+}
+
+.masters {
+  background-color: #FF0000;
+}
+
+.phd {
+  background-color: #00FF00;
 }

@@ -84,3 +84,53 @@ VALUES
     ('ITSU', NOW(), 'admin', 'F18L1S052','UNDERGRADUATE', 'ИТ системи за учење', 'SUMMER', '', 1, 2, 3, 'F18L1S052'),
     ('MAT2', NOW(), 'admin', 'F23L2S001','UNDERGRADUATE', 'Математика 2', 'SUMMER', '', 1, 2, 3, 'F23L2S001'),
     ('ADSB', NOW(), 'admin', 'F18L2S002','UNDERGRADUATE', 'Анализа на софтверските барања', 'SUMMER', '', 1, 2, 3, 'F18L2S002');
+
+
+-- MASTERS STUDIES
+INSERT INTO joined_subject (abbreviation, last_update_time, last_update_user, codes, cycle, name, semester_type, validation_message, weekly_auditorium_classes, weekly_lab_classes, weekly_lectures_classes, main_subject_id)
+VALUES
+    ('DEVOPS_SD', NOW(), 'admin', 'm23_w_017','MASTER', 'DevOps софтверски развој', 'WINTER', '', 1, 2, 3, 'm23_w_017'),
+    ('SLM', NOW(), 'admin', 'SI-Z-01','MASTER', 'Управување со животен циклус на софтвер', 'WINTER', '', 1, 2, 3, 'SI-Z-01'),
+    ('SDP', NOW(), 'admin', 'SI-Z-03','MASTER', 'Шаблони за дизајн на софтвер', 'WINTER', '', 1, 2, 3, 'SI-Z-03'),
+    ('MBSE', NOW(), 'admin', 'm23_w_003','MASTER', 'Моделно базирано софтверско инженерство', 'WINTER', '', 1, 2, 3, 'm23_w_003'),
+    ('ACG', NOW(), 'admin', 'm23_w_005','MASTER', 'Напредна компјутерска графика', 'WINTER', '', 1, 2, 3, 'm23_w_005'),
+    ('AADIS', NOW(), 'admin', 'm23_w_008','MASTER', 'Анализа и дизајн на информациски системи', 'WINTER', '', 1, 2, 3, 'm23_w_008'),
+    ('APVS', NOW(), 'admin', 'm23_w_016','MASTER', 'Анализа и предвидување на временски серии', 'WINTER', '', 1, 2, 3, 'm23_w_016'),
+    ('DATAVIZ', NOW(), 'admin', 'm23_w_022','MASTER', 'Податочна визуелизација', 'WINTER', '', 1, 2, 3, 'm23_w_022'),
+    ('VGDVIZ', NOW(), 'admin', 'm23_w_027','MASTER', 'Дизајн на видео игри и визуелни ефекти', 'WINTER', '', 1, 2, 3, 'm23_w_027'),
+    ('BIOMSYS', NOW(), 'admin', 'm23_w_048','MASTER', 'Биометриски системи (Biometric Systems)', 'WINTER', '', 1, 2, 3, 'm23_w_048'),
+    ('BIZD', NOW(), 'admin', 'm23_w_060','MASTER', 'Бизнис дизајн', 'WINTER', '', 1, 2, 3, 'm23_w_060'),
+
+    ('AMWAPPS', NOW(), 'admin', 'IT-Z-02','MASTER', 'Напредни мобилни и веб апликации', 'SUMMER', '', 1, 2, 3, 'IT-Z-02'),
+    ('FM', NOW(), 'admin', 'KN-Z-03','MASTER', 'Формални методи', 'SUMMER', '', 1, 2, 3, 'KN-Z-03'),
+    ('MEDINFO', NOW(), 'admin', 'm23_s_235','MASTER', 'Медицинска информатика', 'SUMMER', '', 1, 2, 3, 'm23_s_235'),
+    ('AENGSR', NOW(), 'admin', 'ITMS01','MASTER', 'Напредно инженерство на софтверски барања', 'SUMMER', '', 1, 2, 3, 'ITMS01'),
+    ('RMWT', NOW(), 'admin', 'KN-Z-04','MASTER', 'Истражувачки методи и техники за пишување', 'SUMMER', '', 1, 2, 3, 'KN-Z-04'),
+    ('DSEE', NOW(), 'admin', 'm23_s_015','MASTER', 'Примена на наука за податоците за набљудување на Земјата', 'SUMMER', '', 1, 2, 3, 'm23_s_015'),
+    ('SECS', NOW(), 'admin', 'm23_s_020','MASTER', 'Софтверско инженерство за критичните системи', 'SUMMER', '', 1, 2, 3, 'm23_s_020'),
+    ('MULTMODINT', NOW(), 'admin', 'm23_s_023','MASTER', 'Мултимодална интеракција', 'SUMMER', '', 1, 2, 3, 'm23_s_023'),
+    ('SOFTARCH', NOW(), 'admin', 'm23_s_026','MASTER', 'Софтверски архитектури', 'SUMMER', '', 1, 2, 3, 'm23_s_026'),
+    ('DSIOT', NOW(), 'admin', 'm23_s_049','MASTER', 'Наука за податоците во Интернет од нештата', 'SUMMER', '', 1, 2, 3, 'm23_s_049'),
+    ('SOFREL', NOW(), 'admin', 'm23_s_050','MASTER', 'Надежност на софтвер', 'SUMMER', '', 1, 2, 3, 'm23_s_050'),
+    ('ENGETH', NOW(), 'admin', 'm23_s_076','MASTER', 'Инженерска етика', 'SUMMER', '', 1, 2, 3, 'm23_s_076');
+
+-- PHD STUDIES
+INSERT INTO joined_subject (abbreviation, last_update_time, last_update_user, codes, cycle, name, semester_type, validation_message, weekly_auditorium_classes, weekly_lab_classes, weekly_lectures_classes, main_subject_id)
+VALUES
+    ('ASCS', NOW(), 'admin', 'ИНФ-С1','MASTER', 'Алгебарски структури за компјутерски науки', 'WINTER', '', 1, 2, 3, 'ИНФ-С1'),
+    ('ASST', NOW(), 'admin', 'ИНФ-С2','MASTER', 'Асистивни технологии', 'WINTER', '', 1, 2, 3, 'ИНФ-С2'),
+    ('BIOI', NOW(), 'admin', 'ИНФ-С3','MASTER', 'Биоинформатика', 'WINTER', '', 1, 2, 3, 'ИНФ-С3'),
+    ('ESTC', NOW(), 'admin', 'ИНФ-С23','MASTER', 'Електронски сервиси во облак', 'WINTER', '', 1, 2, 3, 'ИНФ-С23'),
+    ('EVVSR', NOW(), 'admin', 'ИНФ-С6','MASTER', 'Инженерство, верификација и валидација на софтверски барања', 'WINTER', '', 1, 2, 3, 'ИНФ-С6'),
+    ('ATCSHPC', NOW(), 'admin', 'ИНФ-С19','MASTER', 'Напредни техники и компјутерски системи за пресметување со високи перформанси', 'WINTER', '', 1, 2, 3, 'ИНФ-С19'),
+    ('PRACCRYPTO', NOW(), 'admin', 'ИНФ-С24','MASTER', 'Практична криптографија', 'WINTER', '', 1, 2, 3, 'ИНФ-С24'),
+    ('AIWS', NOW(), 'admin', 'КНИ-С40','MASTER', 'Адаптивни и интерактивни веб информациски системи', 'WINTER', '', 1, 2, 3, 'КНИ-С40'),
+    ('BDA', NOW(), 'admin', 'КНИ-С25','MASTER', 'Бајесова анализа на податоци', 'WINTER', '', 1, 2, 3, 'КНИ-С25'),
+    ('AWNET', NOW(), 'admin', 'КНИ-С12','MASTER', 'Напредни безжични мрежи', 'WINTER', '', 1, 2, 3, 'КНИ-С12'),
+    ('AMIS', NOW(), 'admin', 'КНИ-С16','MASTER', 'Напредни мултимедиски информациски системи', 'WINTER', '', 1, 2, 3, 'КНИ-С16'),
+    ('NITT', NOW(), 'admin', 'КНИ-С18','MASTER', 'Нови трендови во интернет технологијата', 'WINTER', '', 1, 2, 3, 'КНИ-С18'),
+    ('CPBIOINFO', NOW(), 'admin', 'КНИ-С3','MASTER', 'Пресметковни парадигми во биоинформатика', 'WINTER', '', 1, 2, 3, 'КНИ-С3'),
+    ('SDS', NOW(), 'admin', 'КНИ-С21','MASTER', 'Теми во развој на софтвер', 'WINTER', '', 1, 2, 3, 'КНИ-С21');
+
+
+
