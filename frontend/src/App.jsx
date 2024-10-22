@@ -188,8 +188,6 @@ function App() {
         .catch((error) => {
           console.error("Error adding exam:", error);
         });
-
-      
     }
   };
 
@@ -212,7 +210,11 @@ function App() {
       </div>
       <div className="content-container">
         <div className="calendar-wrapper">
-          <Calendar onDateSelect={setStartDate} events={events} />
+          <Calendar 
+            onDateSelect={setStartDate} 
+            events={events} 
+            selectedDate={startDate}  // Pass the selected date to Calendar
+          />
         </div>
         <br />
         <div className="schedule-wrapper" style={{ overflowX: 'auto', textAlign: 'start' }}>
