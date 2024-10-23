@@ -16,11 +16,11 @@ function Register({ onBack }) {
     e.preventDefault();
     try {
       await register(userInfo); // Ensure you have the register function in api.js
-      setMessage('User registered successfully');
+      setMessage('Успешна регистрација на нов корисник');
       setUserInfo({ username: '', password: '', role: 'USER' }); // Reset form
     } catch (error) {
-      setMessage('Registration failed: ' + error.response.data);
-      console.error("Registration failed:", error);
+      setMessage('Неуспешна регистрација: ' + error.response.data);
+      console.error("Неуспешна регистрација: ", error);
     }
     navigate('/login');
   };
