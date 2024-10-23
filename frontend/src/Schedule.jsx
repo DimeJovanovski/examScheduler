@@ -23,7 +23,7 @@ const Schedule = forwardRef(({ startDate, onEventsChange }, ref) => {
 
   const openEditForm = async (event) => {
     const form = [
-      { type: 'title', name: `${event.text} (${event.subjectAbbreviation})` },
+      { type: 'title', name: `${event.subjectName} (${event.subjectAbbreviation})` },
       { 
         type: 'datetime', 
         id: 'fromTime', 
