@@ -66,6 +66,7 @@ function App() {
     localStorage.removeItem('jwt');
     localStorage.removeItem('role');
     setAuthenticated(false);
+    navigate('/login');
   };
 
   // Function to toggle to the Register component

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { register } from './api/api'; // Make sure you have a register function in your api.js
+import { useNavigate } from 'react-router-dom';
 
 function Register({ onBack }) {
   const [userInfo, setUserInfo] = useState({ username: '', password: '', role: 'USER' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // For navigating programmatically
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,11 +22,18 @@ function Register({ onBack }) {
       setMessage('Registration failed: ' + error.response.data);
       console.error("Registration failed:", error);
     }
+    navigate('/login');
+  };
+
+  // Navigate to login handler
+  const navigateToLogin = () => {
+    onBack();
+    navigate('/login');
   };
 
   return (
     <div className="register-container">
-      <h2>Register</h2>
+      <h2>Регистрација</h2>
       {message && <p className="message">{message}</p>}
       <form onSubmit={handleRegister}>
         <input
@@ -44,10 +53,13 @@ function Register({ onBack }) {
           required
         />
         <input type="hidden" name="role" value={userInfo.role} />
-        <button type="submit">Register</button>
+        <button type="submit">Регистрирај се</button>
       </form>
       <p>
-        Already have an account? <span onClick={onBack} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>Back to Login</span>
+        Веќе имате корисничка сметка? 
+        <span onClick={navigateToLogin} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+          Најава
+        </span>
       </p>
     </div>
   );
